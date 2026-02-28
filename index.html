@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Вода Добра — помоги оплатить воду тем, кто не может</title>
+  <style>
+    :root {
+      --primary-dark: #003087;
+      --primary-blue: #0099d1;
+      --light-bg: #f5f8fa;
+      --text: #333;
+      --gray: #666;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--light-bg);
+      line-height: 1.6;
+    }
+    .accessibility {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 6px;
+      font-size: 13px;
+    }
+    header {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .top-line {
+      background: var(--primary-dark);
+      color: white;
+      padding: 8px 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: bold;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo::before { content: "💧❤️"; font-size: 36px; }
+    nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+    nav select, nav a {
+      padding: 8px 12px;
+      font-size: 15px;
+      color: var(--primary-dark);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav select {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+    }
+    nav a:hover { color: var(--primary-blue); }
+    .hero {
+      background: linear-gradient(rgba(0,48,135,0.65), rgba(0,48,135,0.45)),
+                  url('https://www.rosvodokanal.ru/upload/iblock/5a6/aciw1khlcccidh04q19204skr36dswvw.png') center/cover;
+      color: white;
+      text-align: center;
+      padding: 100px 20px;
+    }
+    .hero h1 { font-size: 44px; margin-bottom: 20px; text-shadow: 2px 2px 8px #000; }
+    .hero p { font-size: 20px; max-width: 800px; margin: 0 auto 30px; }
+    .btn {
+      background: var(--primary-blue);
+      color: white;
+      padding: 14px 40px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-block;
+      transition: 0.3s;
+    }
+    .btn:hover { background: #007bb3; transform: translateY(-3px); }
+    .section { padding: 60px 20px; max-width: 1240px; margin: 0 auto; }
+    .section h2 { color: var(--primary-dark); text-align: center; font-size: 32px; margin-bottom: 40px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 30px;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      transition: transform 0.25s, opacity 0.6s ease, transform 0.6s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .card:hover { transform: translateY(-8px); }
+    .card-img { height: 200px; background: #ccc center/cover; }
+    .card-body { padding: 24px; }
+    .org-name { font-size: 22px; color: var(--primary-dark); margin-bottom: 12px; }
+    .progress { height: 14px; background: #e0e0e0; border-radius: 7px; margin: 18px 0; overflow: hidden; }
+    .progress-bar { height: 100%; background: var(--primary-blue); transition: width 1.5s ease-in-out; }
+    .debt-info { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 12px; font-weight: 500; }
+    .btn-pay {
+      background: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* Таблицы рейтингов */
+    .ranking-table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto 40px;
+      border-collapse: collapse;
+      font-size: 17px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .ranking-table th, .ranking-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .ranking-table th {
+      background: var(--primary-dark);
+      color: white;
+      font-weight: bold;
+    }
+    .ranking-table tr:nth-child(even) { background: #f9fcff; }
+    .place-1 { font-weight: bold; color: #d4af37; font-size: 1.3em; }
+    .place-2 { font-weight: bold; color: #c0c0c0; font-size: 1.2em; }
+    .place-3 { font-weight: bold; color: #cd7f32; font-size: 1.15em; }
+
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 50px 20px 20px;
+      text-align: center;
+    }
+    footer a { color: #4fc3f7; }
+
+    @media (max-width: 768px) {
+      .hero { padding: 70px 16px; }
+      .hero h1 { font-size: 32px; }
+      nav { flex-direction: column; gap: 12px; }
+      .ranking-table { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="accessibility">
+  Версия для слабовидящих • Размер шрифта: A A A
+</div>
+
+<header>
+  <div class="top-line">
+    <div>Горячая линия: 8 800 555-77-33 (бесплатно по России)</div>
+    <div><a href="#" style="color:white;">Личный кабинет донора</a></div>
+  </div>
+  <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; max-width:1240px; margin:auto; flex-wrap:wrap; gap:20px;">
+    <div class="logo">Вода Добра</div>
+    <nav>
+      <select id="citySelect" onchange="filterCards()">
+        <option value="all">Все города</option>
+        <option value="Тюмень">Тюмень</option>
+        <option value="Омск">Омск</option>
+        <option value="Барнаул">Барнаул</option>
+        <option value="Оренбург">Оренбург</option>
+        <option value="Томск">Томск</option>
+        <option value="Воронеж">Воронеж</option>
+        <option value="Краснодар">Краснодар</option>
+      </select>
+      <a href="index.html">Главная</a>
+      <a href="how.html">Как это работает</a>
+      <a href="stories.html">Истории</a>
+      <a href="about.html">О проекте</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="for-ngo.html">Для НКО и приютов</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Оплатите воду тем, кто остался без неё</h1>
+  <p>Выберите свой город — и помогите приютам, семьям и организациям в трудной ситуации погасить долг за водоснабжение</p>
+  <a href="#cards" class="btn">Выбрать, кому помочь</a>
+</section>
+
+<section class="section" id="cards">
+  <h2>Кому нужна помощь сегодня</h2>
+  <div class="cards">
+
+    <div class="card visible" data-city="Тюмень">
+      <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&q=80&w=800');"></div>
+      <div class="card-body">
+        <div class="org-name">Приют «Верный Друг» • Тюмень</div>
+        <p>620 собак и 180 кошек. Долг за воду и бойлерную.</p>
+        <div class="debt-info"><span>Долг: 138 000 ₽</span><span>Собрано: 31%</span></div>
+        <div class="progress"><div class="progress-bar" style="width:31%"></div></div>
+        <a href="help-example.html" class="btn-pay">Помочь приюту</a>
+      </div>
+    </div>
+
+    <div class="card visible" data-city="Барнаул">
+      <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&q=80&w=800');"></div>
+      <div class="card-body">
+        <div class="org-name">Приют «Лапы Алтая» • Барнаул</div>
+        <p>850+ животных. Критический расход воды зимой.</p>
+        <div class="debt-info"><span>Долг: 192 000 ₽</span><span>Собрано: 27%</span></div>
+        <div class="progress"><div class="progress-bar" style="width:27%"></div></div>
+        <a href="#" class="btn-pay">Оплатить часть</a>
+      </div>
+    </div>
+
+    <div class="card visible" data-city="Омск">
+      <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1567755253-8c8d8d2d0d8c?auto=format&fit=crop&q=80&w=800');"></div>
+      <div class="card-body">
+        <div class="org-name">Приют «Надежда» • Омск</div>
+        <p>Около 580 животных. Долг за воду после ремонта системы.</p>
+        <div class="debt-info"><span>Долг: 156 300 ₽</span><span>Собрано: 22%</span></div>
+        <div class="progress"><div class="progress-bar" style="width:22%"></div></div>
+        <a href="#" class="btn-pay">Помочь сейчас</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Рейтинг городов -->
+<section class="section">
+  <h2>Рейтинг городов — кто больше всех помогает?</h2>
+  <table class="ranking-table">
+    <thead>
+      <tr>
+        <th>Место</th>
+        <th>Город</th>
+        <th>Собрано жителями</th>
+        <th>Доноров</th>
+        <th>Динамика</th>
+      </tr>
+    </thead>
+    <tbody id="cityLeaderboard"></tbody>
+  </table>
+</section>
+
+<!-- Рейтинг доноров -->
+<section class="section" style="background:#fff;">
+  <h2>Топ-10 самых щедрых доноров</h2>
+  <p style="text-align:center; color:var(--gray); margin-bottom:30px;">Анонимно, по сумме всех пожертвований за время существования проекта</p>
+  <table class="ranking-table">
+    <thead>
+      <tr>
+        <th>Место</th>
+        <th>Донор</th>
+        <th>Город</th>
+        <th>Сумма помощи</th>
+      </tr>
+    </thead>
+    <tbody id="donorsLeaderboard"></tbody>
+  </table>
+</section>
+
+<footer>
+  <p>© 2026 Социальный проект «Вода Добра»</p>
+  <p>Помощь в оплате водоснабжения приютам и семьям в городах Росводоканала</p>
+  <p><a href="#">Реквизиты</a> • <a href="#">Политика конфиденциальности</a> • <a href="for-ngo.html">Для НКО и приютов</a></p>
+</footer>
+
+<script>
+// Фильтр по городам
+function filterCards() {
+  const val = document.getElementById('citySelect').value;
+  document.querySelectorAll('.card').forEach(card => {
+    card.classList.toggle('visible', val === 'all' || card.dataset.city === val);
+  });
+}
+
+// Данные городов (имитация)
+const cities = [
+  { place: 1, city: "Тюмень",     sum: 1284500, donors: 1247, trend: "↑ +45 200 ₽" },
+  { place: 2, city: "Омск",       sum: 987300,  donors: 892,  trend: "↑ +18 900 ₽" },
+  { place: 3, city: "Барнаул",    sum: 742100,  donors: 681,  trend: "↓ -3 400 ₽"  },
+  { place: 4, city: "Оренбург",   sum: 615400,  donors: 543,  trend: "↑ +72 000 ₽" },
+  { place: 5, city: "Воронеж",    sum: 498200,  donors: 412,  trend: "—"           },
+  { place: 6, city: "Краснодар",  sum: 381900,  donors: 356,  trend: "↑ +9 500 ₽"  },
+  { place: 7, city: "Томск",      sum: 245700,  donors: 198,  trend: "—"           }
+];
+
+// Данные доноров (имитация, анонимно)
+const donors = [
+  { place: 1, name: "Алексей К.", city: "Тюмень",    sum: 48750 },
+  { place: 2, name: "Марина П.",  city: "Омск",      sum: 31200 },
+  { place: 3, name: "Сергей В.",  city: "Барнаул",   sum: 24580 },
+  { place: 4, name: "Екатерина М.", city: "Тюмень",  sum: 19840 },
+  { place: 5, name: "Дмитрий Р.", city: "Оренбург",  sum: 16730 },
+  { place: 6, name: "Анна С.",    city: "Воронеж",   sum: 14290 },
+  { place: 7, name: "Игорь Т.",   city: "Краснодар", sum: 11960 },
+  { place: 8, name: "Ольга Л.",   city: "Томск",     sum:  9840 },
+  { place: 9, name: "Владимир З.", city: "Омск",     sum:  8760 },
+  { place:10, name: "Наталья Б.", city: "Тюмень",    sum:  7520 }
+];
+
+function renderCityLeaderboard() {
+  const tbody = document.getElementById('cityLeaderboard');
+  tbody.innerHTML = '';
+  cities.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="place-${item.place <= 3 ? item.place : ''}">${item.place}</td>
+      <td>${item.city}</td>
+      <td>${item.sum.toLocaleString('ru-RU')} ₽</td>
+      <td>${item.donors}</td>
+      <td style="color: ${item.trend.includes('↑') ? '#4caf50' : item.trend.includes('↓') ? '#f44336' : '#666'}">
+        ${item.trend}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderDonorsLeaderboard() {
+  const tbody = document.getElementById('donorsLeaderboard');
+  tbody.innerHTML = '';
+  donors.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="place-${item.place <= 3 ? item.place : ''}">${item.place}</td>
+      <td>${item.name}</td>
+      <td>${item.city}</td>
+      <td style="font-weight:bold; color:var(--primary-blue);">
+        ${item.sum.toLocaleString('ru-RU')} ₽
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Имитация обновления города-лидера каждые 45 сек
+setInterval(() => {
+  cities[0].sum += Math.floor(Math.random() * 15000) + 5000;
+  cities[0].donors += Math.floor(Math.random() * 15) + 3;
+  cities[0].trend = `↑ +${Math.floor(Math.random() * 20000) + 3000} ₽`;
+  cities.sort((a,b) => b.sum - a.sum);
+  cities.forEach((c,i) => c.place = i+1);
+  renderCityLeaderboard();
+}, 45000);
+
+// Инициализация
+window.onload = () => {
+  setTimeout(() => {
+    filterCards();
+    renderCityLeaderboard();
+    renderDonorsLeaderboard();
+  }, 100);
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html> 
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Контакты — Вода Добра</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="accessibility">Версия для слабовидящих • A A A</div>
+
+<header>
+  <div class="top-line">
+    <div>Горячая линия: 8 800 555-77-33 (бесплатно по России)</div>
+    <div><a href="#" style="color:white;">Личный кабинет донора</a></div>
+  </div>
+  <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; max-width:1240px; margin:auto; flex-wrap:wrap; gap:20px;">
+    <div class="logo">Вода Добра</div>
+    <nav>
+      <select id="citySelect" onchange="filterCards()">
+        <option value="all">Все города</option>
+        <option value="Тюмень">Тюмень</option>
+        <option value="Омск">Омск</option>
+        <option value="Барнаул">Барнаул</option>
+        <option value="Оренбург">Оренбург</option>
+        <option value="Томск">Томск</option>
+        <option value="Воронеж">Воронеж</option>
+        <option value="Краснодар">Краснодар</option>
+      </select>
+      <a href="index.html">Главная</a>
+      <a href="how.html">Как это работает</a>
+      <a href="stories.html">Истории</a>
+      <a href="about.html">О проекте</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="for-ngo.html">Для НКО и приютов</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" style="padding:90px 20px;">
+  <h1>Контакты</h1>
+  <p>Мы всегда на связи — пишите, звоните, присылайте вопросы</p>
+</section>
+
+<section class="section" style="background:#fff;">
+  <div style="max-width:1000px; margin:auto; display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:start;">
+    
+    <div>
+      <h2 style="color:var(--primary-dark); margin-bottom:30px;">Связаться с нами</h2>
+      
+      <div style="margin-bottom:30px;">
+        <h3 style="font-size:20px; margin-bottom:8px;">Горячая линия (бесплатно)</h3>
+        <p style="font-size:24px; font-weight:bold; color:var(--primary-blue);">8 800 555-77-33</p>
+        <p style="color:var(--gray);">Ежедневно с 8:00 до 20:00 по московскому времени</p>
+      </div>
+      
+      <div style="margin-bottom:30px;">
+        <h3 style="font-size:20px; margin-bottom:8px;">Электронная почта</h3>
+        <p style="font-size:20px; font-weight:bold;"><a href="mailto:pomosh@voda-dobra.ru" style="color:var(--primary-blue);">pomosh@voda-dobra.ru</a></p>
+        <p style="color:var(--gray);">Ответ в течение 1–2 рабочих дней</p>
+      </div>
+      
+      <div>
+        <h3 style="font-size:20px; margin-bottom:8px;">Социальные сети</h3>
+        <p>
+          <a href="#" style="color:var(--primary-blue); margin-right:20px;">ВКонтакте</a>
+          <a href="#" style="color:var(--primary-blue); margin-right:20px;">Telegram</a>
+          <a href="#" style="color:var(--primary-blue);">Одноклассники</a>
+        </p>
+      </div>
+    </div>
+    
+    <div>
+      <h2 style="color:var(--primary-dark); margin-bottom:30px;">Реквизиты проекта</h2>
+      <p style="font-size:16px; line-height:1.7;">
+        Общественная организация «Вода Добра»<br>
+        ИНН 1234567890 / КПП 123450001<br>
+        ОГРН 1234567890123<br>
+        Расчётный счёт 40703810000000001234 в ПАО Сбербанк<br>
+        Корр. счёт 30101810400000000225<br>
+        БИК 044525225<br><br>
+        Юридический адрес: 125009, г. Москва, ул. Тверская, д. 1<br>
+        Фактический адрес: тот же
+      </p>
+    </div>
+  
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 «Вода Добра» — социальный проект помощи с оплатой воды</p>
+  <p><a href="#">Реквизиты</a> • <a href="#">Политика конфиденциальности</a> • <a href="for-ngo.html">Для НКО и приютов</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+:root {
+  --primary-dark: #003087;
+  --primary-blue: #0099d1;
+  --light-bg: #f5f8fa;
+  --text: #333;
+  --gray: #666;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--light-bg);
+  line-height: 1.6;
+}
+.accessibility {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  font-size: 13px;
+}
+.accessibility a { color: #4fc3f7; text-decoration: underline; }
+header {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.top-line {
+  background: var(--primary-dark);
+  color: white;
+  padding: 8px 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+.logo {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo::before { content: "💧❤️"; font-size: 36px; }
+nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+nav select, nav a {
+  padding: 8px 12px;
+  font-size: 15px;
+  color: var(--primary-dark);
+  text-decoration: none;
+  font-weight: 500;
+}
+nav select {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+nav a:hover { color: var(--primary-blue); }
+.hero {
+  background: linear-gradient(rgba(0,48,135,0.65), rgba(0,48,135,0.45)),
+              url('https://www.rosvodokanal.ru/upload/iblock/5a6/aciw1khlcccidh04q19204skr36dswvw.png') center/cover;
+  color: white;
+  text-align: center;
+  padding: 100px 20px;
+}
+.hero h1 { font-size: 44px; margin-bottom: 20px; text-shadow: 2px 2px 8px #000; }
+.hero p { font-size: 20px; max-width: 800px; margin: 0 auto 30px; }
+.btn {
+  background: var(--primary-blue);
+  color: white;
+  padding: 14px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-block;
+  transition: 0.3s;
+}
+.btn:hover { background: #007bb3; transform: translateY(-3px); }
+.section { padding: 60px 20px; max-width: 1240px; margin: 0 auto; }
+.section h2 { color: var(--primary-dark); text-align: center; font-size: 32px; margin-bottom: 40px; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 30px;
+}
+.card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  transition: transform 0.25s;
+}
+.card:hover { transform: translateY(-8px); }
+.card-img { height: 200px; background: #ccc center/cover; }
+.card-body { padding: 24px; }
+.org-name { font-size: 22px; color: var(--primary-dark); margin-bottom: 12px; }
+.progress { height: 14px; background: #e0e0e0; border-radius: 7px; margin: 18px 0; overflow: hidden; }
+.progress-bar { height: 100%; background: var(--primary-blue); transition: width 1.2s ease; }
+.debt-info { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 12px; font-weight: 500; }
+.btn-pay {
+  background: var(--primary-dark);
+  color: white;
+  text-align: center;
+  padding: 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  display: block;
+}
+.btn-pay.small { background: #555; }
+.steps { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.step { flex: 1 1 300px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; }
+.step h3 { color: var(--primary-dark); margin-bottom: 16px; }
+.story-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; }
+.story-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.story-img { height: 220px; background: #ccc center/cover; }
+.story-body { padding: 20px; }
+footer {
+  background: var(--primary-dark);
+  color: white;
+  padding: 50px 20px 20px;
+  text-align: center;
+}
+footer a { color: #4fc3f7; }
+@media (max-width: 768px) {
+  .hero { padding: 70px 16px; }
+  .hero h1 { font-size: 32px; }
+  nav { flex-direction: column; gap: 12px; }
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>О проекте — Вода Добра</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="accessibility">Версия для слабовидящих • A A A</div>
+
+<<header>
+  <div class="top-line">
+    <div>Горячая линия: 8 800 555-77-33 (бесплатно по России)</div>
+    <div><a href="#" style="color:white;">Личный кабинет донора</a></div>
+  </div>
+  <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; max-width:1240px; margin:auto; flex-wrap:wrap; gap:20px;">
+    <div class="logo">Вода Добра</div>
+    <nav>
+      <select id="citySelect" onchange="filterCards()">
+        <option value="all">Все города</option>
+        <option value="Тюмень">Тюмень</option>
+        <option value="Омск">Омск</option>
+        <option value="Барнаул">Барнаул</option>
+        <option value="Оренбург">Оренбург</option>
+        <option value="Томск">Томск</option>
+        <option value="Воронеж">Воронеж</option>
+        <option value="Краснодар">Краснодар</option>
+      </select>
+      <a href="index.html">Главная</a>
+      <a href="how.html">Как это работает</a>
+      <a href="stories.html">Истории</a>
+      <a href="about.html">О проекте</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="for-ngo.html">Для НКО и приютов</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero" style="padding:80px 20px;">
+  <h1>О проекте «Вода Добра»</h1>
+  <p>Простая идея: никто не должен оставаться без воды из-за долгов</p>
+</section>
+
+<section class="section" style="background:#fff;">
+  <h2>Кто мы и зачем это делаем</h2>
+  <p style="font-size:18px; max-width:900px; margin:0 auto 40px;">
+    «Вода Добра» — это независимый социальный проект, который помогает людям и организациям (приютам для животных, НКО, многодетным семьям, людям в трудной жизненной ситуации) погасить долги именно за водоснабжение и водоотведение.
+  </p>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px; max-width:1000px; margin:auto; text-align:center;">
+    <div>
+      <h3 style="color:var(--primary-dark);">Прозрачность</h3>
+      <p>Каждый платёж идёт напрямую поставщику воды (водоканалу). Вы получаете чек. Мы не берём комиссии.</p>
+    </div>
+    <div>
+      <h3 style="color:var(--primary-dark);">Только целевая помощь</h3>
+      <p>Деньги нельзя потратить ни на что другое — только на оплату счёта за воду.</p>
+    </div>
+  </div>
+
+  <div style="margin:60px auto; max-width:800px; text-align:center;">
+    <h3 style="color:var(--primary-dark);">Мы работаем в городах Росводоканала</h3>
+    <p>Тюмень, Омск, Барнаул, Оренбург, Томск, Воронеж, Краснодар, Липецк и другие</p>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 «Вода Добра» — социальный проект помощи с оплатой воды</p>
+  <p><a href="#">Реквизиты</a> • <a href="#">Политика конфиденциальности</a> • <a href="#">Для НКО и приютов</a></p>
+</footer>
+
+</body>
+</html>

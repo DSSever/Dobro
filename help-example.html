@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Приют «Верный Друг» • Тюмень — Вода Добра</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .detail-hero { background: linear-gradient(rgba(0,48,135,0.7), rgba(0,48,135,0.5)), url('https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&q=80&w=1600') center/cover; padding:120px 20px; color:white; text-align:center; }
+    .detail-hero h1 { font-size:48px; margin-bottom:16px; }
+    .detail-section { background:#fff; padding:60px 20px; }
+    .big-progress { height:24px; background:#e0e0e0; border-radius:12px; margin:30px 0; overflow:hidden; }
+    .big-progress-bar { height:100%; background:var(--primary-blue); }
+    .amounts { display:flex; justify-content:space-around; flex-wrap:wrap; gap:30px; margin:40px 0; }
+    .amount-box { background:var(--light-bg); padding:24px; border-radius:10px; min-width:220px; text-align:center; }
+    .pay-form { max-width:600px; margin:0 auto; background:white; padding:40px; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+
+<div class="accessibility">Версия для слабовидящих • A A A</div>
+
+<header>
+  <div class="top-line">
+    <div>Горячая линия: 8 800 555-77-33 (бесплатно по России)</div>
+    <div><a href="#" style="color:white;">Личный кабинет донора</a></div>
+  </div>
+  <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; max-width:1240px; margin:auto; flex-wrap:wrap; gap:20px;">
+    <div class="logo">Вода Добра</div>
+    <nav>
+      <select id="citySelect" onchange="filterCards()">
+        <option value="all">Все города</option>
+        <option value="Тюмень">Тюмень</option>
+        <option value="Омск">Омск</option>
+        <option value="Барнаул">Барнаул</option>
+        <option value="Оренбург">Оренбург</option>
+        <option value="Томск">Томск</option>
+        <option value="Воронеж">Воронеж</option>
+        <option value="Краснодар">Краснодар</option>
+      </select>
+      <a href="index.html">Главная</a>
+      <a href="how.html">Как это работает</a>
+      <a href="stories.html">Истории</a>
+      <a href="about.html">О проекте</a>
+      <a href="contacts.html">Контакты</a>
+      <a href="for-ngo.html">Для НКО и приютов</a>
+    </nav>
+  </div>
+</header>
+
+<section class="detail-hero">
+  <h1>Приют «Верный Друг» • Тюмень</h1>
+  <p>620 собак и 180 кошек. Без воды — невозможно содержать животных.</p>
+</section>
+
+<section class="section detail-section">
+  <div style="max-width:1100px; margin:auto;">
+    <h2>Текущая ситуация</h2>
+    <p style="font-size:18px; margin:20px 0;">
+      Приют существует 8 лет. Зимой расход воды огромный: поение, мытьё вольеров, отопление через бойлерную. После резкого роста тарифов в 2025 году долг накопился быстро.
+    </p>
+
+    <div class="big-progress">
+      <div class="big-progress-bar" style="width:31%"></div>
+    </div>
+
+    <div class="amounts">
+      <div class="amount-box">
+        <div style="font-size:32px; font-weight:bold; color:var(--primary-dark);">138 000 ₽</div>
+        <div>общий долг</div>
+      </div>
+      <div class="amount-box">
+        <div style="font-size:32px; font-weight:bold; color:#2e7d32;">42 780 ₽</div>
+        <div>уже собрано</div>
+      </div>
+      <div class="amount-box">
+        <div style="font-size:32px; font-weight:bold; color:#d32f2f;">95 220 ₽</div>
+        <div>осталось собрать</div>
+      </div>
+    </div>
+
+    <div class="pay-form">
+      <h2 style="text-align:center; margin-bottom:30px;">Помочь приюту</h2>
+      <p style="text-align:center; margin-bottom:30px;">Выберите сумму или введите свою</p>
+
+      <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
+        <button style="padding:16px 32px; font-size:18px; border:2px solid var(--primary-blue); background:transparent; border-radius:6px; cursor:pointer;">500 ₽</button>
+        <button style="padding:16px 32px; font-size:18px; border:2px solid var(--primary-blue); background:transparent; border-radius:6px; cursor:pointer;">1 000 ₽</button>
+        <button style="padding:16px 32px; font-size:18px; border:2px solid var(--primary-blue); background:transparent; border-radius:6px; cursor:pointer;">5 000 ₽</button>
+        <button style="padding:16px 32px; font-size:18px; border:2px solid var(--primary-blue); background:transparent; border-radius:6px; cursor:pointer;">10 000 ₽</button>
+      </div>
+
+      <div style="text-align:center;">
+        <input type="number" placeholder="Своя сумма" style="padding:16px; font-size:18px; width:220px; margin-right:10px; border:1px solid #ccc; border-radius:6px;">
+        <button class="btn" style="padding:16px 40px; font-size:18px;">Оплатить</button>
+      </div>
+
+      <p style="text-align:center; margin-top:30px; font-size:14px; color:var(--gray);">
+        Деньги поступят напрямую в водоканал Тюмени. Вы получите чек.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 «Вода Добра» — социальный проект помощи с оплатой воды</p>
+  <p><a href="#">Реквизиты</a> • <a href="#">Политика конфиденциальности</a></p>
+</footer>
+
+</body>
+</html>
