@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Вода Добра — помоги оплатить воду тем, кто не может</title>
+  <link rel="stylesheet" href="menu.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
     :root {
       --primary-dark: #003087;
@@ -18,6 +22,7 @@
       color: var(--text);
       background: var(--light-bg);
       line-height: 1.6;
+      
     }
     .accessibility {
       background: #000;
@@ -26,46 +31,6 @@
       padding: 6px;
       font-size: 13px;
     }
-    header {
-      background: white;
-      border-bottom: 1px solid #ddd;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .top-line {
-      background: var(--primary-dark);
-      color: white;
-      padding: 8px 20px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      flex-wrap: wrap;
-    }
-    .logo {
-      font-size: 26px;
-      font-weight: bold;
-      color: var(--primary-dark);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .logo::before { content: "💧❤️"; font-size: 36px; }
-    nav { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
-    nav select, nav a {
-      padding: 8px 12px;
-      font-size: 15px;
-      color: var(--primary-dark);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    nav select {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background: white;
-    }
-    nav a:hover { color: var(--primary-blue); }
     .hero {
       background: linear-gradient(rgba(0,48,135,0.65), rgba(0,48,135,0.45)),
                   url('https://www.rosvodokanal.ru/upload/iblock/5a6/aciw1khlcccidh04q19204skr36dswvw.png') center/cover;
@@ -160,52 +125,281 @@
     }
     footer a { color: #4fc3f7; }
 
+    /* Стили для карты */
+    .map-container {
+      width: 100%;
+      height: 500px;
+      margin-bottom: 30px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    
+    .map-popup-content {
+      width: 250px;
+      padding: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .popup-header {
+      background: var(--primary-dark);
+      color: white;
+      padding: 12px 16px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    
+    .popup-body {
+      padding: 16px;
+      background: white;
+    }
+    
+    .popup-body p {
+      margin: 8px 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+    
+    .popup-stat {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      font-weight: 500;
+    }
+    
+    .popup-progress-wrapper {
+      margin-top: 12px;
+    }
+    
+    .popup-progress {
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .popup-progress-bar {
+      height: 100%;
+      background: var(--primary-blue);
+    }
+    
+    .map-button {
+      display: block;
+      background: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 8px 12px;
+      margin-top: 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    
+    .map-button:hover {
+      background: var(--primary-blue);
+    }
+
+    /* Стили для дашборда */
+    .dashboard {
+      background: white;
+      border-radius: 12px;
+      padding: 40px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+
+    .dashboard h2 {
+      text-align: center;
+      color: var(--primary-dark);
+      font-size: 32px;
+      margin-bottom: 40px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, #0077b6 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 153, 209, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-card:nth-child(2) {
+      background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    }
+
+    .stat-card:nth-child(3) {
+      background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .charts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .chart-box {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .chart-box h3 {
+      color: var(--primary-dark);
+      font-size: 18px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 300px;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        padding: 25px 15px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .stat-card {
+        padding: 20px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+      }
+
+      .charts-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .chart-wrapper {
+        height: 250px;
+      }
+    }
+
     @media (max-width: 768px) {
       .hero { padding: 70px 16px; }
       .hero h1 { font-size: 32px; }
-      nav { flex-direction: column; gap: 12px; }
+      .map-container { height: 350px; }
       .ranking-table { font-size: 15px; }
+    }
+    
+    @media (max-width: 480px) {
+      .map-container { height: 250px; }
+      .ranking-table { font-size: 14px; }
     }
   </style>
 </head>
 <body>
 
-<div class="accessibility">
-  Версия для слабовидящих • Размер шрифта: A A A
-</div>
-
-<header>
-  <div class="top-line">
-    <div>Горячая линия: 8 800 555-77-33 (бесплатно по России)</div>
-    <div><a href="#" style="color:white;">Личный кабинет донора</a></div>
-  </div>
-  <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; max-width:1240px; margin:auto; flex-wrap:wrap; gap:20px;">
-    <div class="logo">Вода Добра</div>
-    <nav>
-      <select id="citySelect" onchange="filterCards()">
-        <option value="all">Все города</option>
-        <option value="Тюмень">Тюмень</option>
-        <option value="Омск">Омск</option>
-        <option value="Барнаул">Барнаул</option>
-        <option value="Оренбург">Оренбург</option>
-        <option value="Томск">Томск</option>
-        <option value="Воронеж">Воронеж</option>
-        <option value="Краснодар">Краснодар</option>
-      </select>
-      <a href="index.html">Главная</a>
-      <a href="how.html">Как это работает</a>
-      <a href="stories.html">Истории</a>
-      <a href="about.html">О проекте</a>
-      <a href="contacts.html">Контакты</a>
-      <a href="for-ngo.html">Для НКО и приютов</a>
-    </nav>
-  </div>
-</header>
+<script src="menu.js"></script>
 
 <section class="hero">
   <h1>Оплатите воду тем, кто остался без неё</h1>
   <p>Выберите свой город — и помогите приютам, семьям и организациям в трудной ситуации погасить долг за водоснабжение</p>
   <a href="#cards" class="btn">Выбрать, кому помочь</a>
+</section>
+
+<!-- Интерактивный Дашборд -->
+<section class="section">
+  <div class="dashboard">
+    <h2>📊 Статистика проекта</h2>
+    
+    <!-- Счётчики -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Собрано всего</div>
+        <div class="stat-value" id="totalRaised">0 ₽</div>
+        <div class="stat-change" id="totalChange">↑ за 30 дней</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-label">Активных доноров</div>
+        <div class="stat-value" id="donorsCount">0</div>
+        <div class="stat-change" id="donorsChange">↑ в этом месяце</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🐾</div>
+        <div class="stat-label">Спасено приютов</div>
+        <div class="stat-value" id="sheltersCount">0</div>
+        <div class="stat-change" id="sheltersChange">в 8 городах</div>
+      </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="charts-container">
+      <div class="chart-box">
+        <h3>Сбор средств по месяцам</h3>
+        <div class="chart-wrapper">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-box">
+        <h3>Распределение по городам</h3>
+        <div class="chart-wrapper">
+          <canvas id="citiesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="section" id="cards">
@@ -245,6 +439,26 @@
       </div>
     </div>
 
+    <div class="card visible" data-city="Армавир">
+      <div class="card-img" style="background-image:url('https://images.unsplash.com/photo-1563521694-e70d8c6a176f?auto=format&fit=crop&q=80&w=800');"></div>
+      <div class="card-body">
+        <div class="org-name">Приют «Верный путь» • Армавир</div>
+        <p>340+ животных. Долг за водоснабжение за три месяца.</p>
+        <div class="debt-info"><span>Долг: 89 500 ₽</span><span>Собрано: 18%</span></div>
+        <div class="progress"><div class="progress-bar" style="width:18%"></div></div>
+        <a href="#" class="btn-pay">Помочь приюту</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Интерактивная Карта -->
+<section class="section" style="background: white;">
+  <h2>Где работает проект</h2>
+  <p style="text-align:center; color:var(--gray); margin-bottom:30px; font-size:16px;">Нажимайте на города, чтобы узнать о нуждах приютов и текущем статусе сбора</p>
+  <div class="map-container">
+    <div id="map"></div>
   </div>
 </section>
 
@@ -305,7 +519,8 @@ const cities = [
   { place: 4, city: "Оренбург",   sum: 615400,  donors: 543,  trend: "↑ +72 000 ₽" },
   { place: 5, city: "Воронеж",    sum: 498200,  donors: 412,  trend: "—"           },
   { place: 6, city: "Краснодар",  sum: 381900,  donors: 356,  trend: "↑ +9 500 ₽"  },
-  { place: 7, city: "Томск",      sum: 245700,  donors: 198,  trend: "—"           }
+  { place: 7, city: "Томск",      sum: 245700,  donors: 198,  trend: "—"           },
+  { place: 8, city: "Армавир",    sum: 156800,  donors: 124,  trend: "↑ +12 300 ₽" }
 ];
 
 // Данные доноров (имитация, анонимно)
@@ -340,6 +555,174 @@ function renderCityLeaderboard() {
   });
 }
 
+// Инициализация карты
+function initMap() {
+  const map = L.map('map').setView([63, 95], 4);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 10,
+    minZoom: 3
+  }).addTo(map);
+
+  // Данные городов с координатами и информацией
+  const cityMarkers = [
+    { 
+      name: 'Тюмень', 
+      lat: 57.15, 
+      lng: 65.54, 
+      debt: 138000, 
+      collected: 31, 
+      animals: '620 собак, 180 кошек',
+      shelter: 'Приют «Верный Друг»'
+    },
+    { 
+      name: 'Омск', 
+      lat: 54.99, 
+      lng: 73.37, 
+      debt: 156300, 
+      collected: 22, 
+      animals: '580 животных',
+      shelter: 'Приют «Надежда»'
+    },
+    { 
+      name: 'Барнаул', 
+      lat: 53.35, 
+      lng: 83.77, 
+      debt: 192000, 
+      collected: 27, 
+      animals: '850+ животных',
+      shelter: 'Приют «Лапы Алтая»'
+    },
+    { 
+      name: 'Оренбург', 
+      lat: 51.56, 
+      lng: 55.1, 
+      debt: 115600, 
+      collected: 35, 
+      animals: '420 животных',
+      shelter: 'Приют «Забота»'
+    },
+    { 
+      name: 'Томск', 
+      lat: 56.49, 
+      lng: 84.97, 
+      debt: 95400, 
+      collected: 42, 
+      animals: '380 животных',
+      shelter: 'Приют «Верность»'
+    },
+    { 
+      name: 'Воронеж', 
+      lat: 51.67, 
+      lng: 39.19, 
+      debt: 118900, 
+      collected: 38, 
+      animals: '520 животных',
+      shelter: 'Приют «Луч Добра»'
+    },
+    { 
+      name: 'Краснодар', 
+      lat: 45.04, 
+      lng: 38.98, 
+      debt: 142300, 
+      collected: 29, 
+      animals: '640 животных',
+      shelter: 'Приют «Солнце»'
+    },
+    { 
+      name: 'Армавир', 
+      lat: 45.01, 
+      lng: 41.12, 
+      debt: 89500, 
+      collected: 18, 
+      animals: '340+ животных',
+      shelter: 'Приют «Верный путь»'
+    }
+  ];
+
+  // Добавить маркеры на карту
+  cityMarkers.forEach(city => {
+    const collected = Math.round(city.debt * city.collected / 100);
+    
+    // Определить цвет маркера в зависимости от прогресса
+    let markerColor = '#003087';
+    if (city.collected >= 50) markerColor = '#4caf50';
+    else if (city.collected >= 30) markerColor = '#0099d1';
+    
+    // Создать HTML popup
+    const popupHTML = `
+      <div class="map-popup-content">
+        <div class="popup-header">${city.shelter}</div>
+        <div class="popup-body">
+          <p><strong>${city.name}</strong></p>
+          <p style="font-size: 13px; color: #666; margin-bottom: 12px;">${city.animals}</p>
+          
+          <div class="popup-stat">
+            <span>Долг:</span>
+            <strong>${city.debt.toLocaleString('ru-RU')} ₽</strong>
+          </div>
+          
+          <div class="popup-stat">
+            <span>Собрано:</span>
+            <strong>${collected.toLocaleString('ru-RU')} ₽</strong>
+          </div>
+          
+          <div class="popup-progress-wrapper">
+            <p style="font-size: 12px; margin-bottom: 6px;"><strong>${city.collected}%</strong></p>
+            <div class="popup-progress">
+              <div class="popup-progress-bar" style="width: ${city.collected}%"></div>
+            </div>
+          </div>
+          
+          <a href="#cards" class="map-button">Помочь приюту</a>
+        </div>
+      </div>
+    `;
+
+    // Создать кастомный иконку
+    const markerIcon = L.divIcon({
+      html: `<div style="
+        background: ${markerColor};
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+      ">
+        💧
+      </div>`,
+      iconSize: [40, 40],
+      className: 'city-marker'
+    });
+
+    const marker = L.marker([city.lat, city.lng], { icon: markerIcon })
+      .bindPopup(popupHTML, { maxWidth: 270, className: 'city-popup' })
+      .addTo(map);
+
+    // Открыть popup при клике
+    marker.on('click', function() {
+      marker.openPopup();
+    });
+  });
+
+  // Добавить слой пользователя
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      // Можно добавить маркер текущего местоположения пользователя
+    });
+  }
+}
+
+// Инициализировать карту когда страница загружена
+
 function renderDonorsLeaderboard() {
   const tbody = document.getElementById('donorsLeaderboard');
   tbody.innerHTML = '';
@@ -365,7 +748,119 @@ setInterval(() => {
   cities.sort((a,b) => b.sum - a.sum);
   cities.forEach((c,i) => c.place = i+1);
   renderCityLeaderboard();
+  updateDashboardStats();
 }, 45000);
+
+// Обновление статистики дашборда
+function updateDashboardStats() {
+  // Расчет общей суммы
+  const totalRaisedSum = cities.reduce((sum, city) => sum + city.sum, 0);
+  document.getElementById('totalRaised').textContent = 
+    totalRaisedSum.toLocaleString('ru-RU') + ' ₽';
+  
+  // Расчет общего количества доноров
+  const totalDonorsCount = cities.reduce((sum, city) => sum + city.donors, 0);
+  document.getElementById('donorsCount').textContent = totalDonorsCount;
+  
+  // Количество спасенных приютов
+  const sheltersCount = cities.length;
+  document.getElementById('sheltersCount').textContent = sheltersCount;
+}
+
+// Инициализация месячного графика сбора средств
+function initMonthlyChart() {
+  const ctx = document.getElementById('monthlyChart');
+  if (!ctx) return;
+  
+  // Имитация данных по месяцам - возрастающий тренд
+  const baseMonthlyAmount = 65000;
+  const monthlyData = [];
+  for (let i = 0; i < 12; i++) {
+    monthlyData.push(baseMonthlyAmount + (i * 25000) + Math.random() * 15000);
+  }
+  
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+      datasets: [{
+        label: 'Сбор средств (₽)',
+        data: monthlyData,
+        borderColor: '#0099d1',
+        backgroundColor: 'rgba(0, 153, 209, 0.05)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 5,
+        pointBackgroundColor: '#0099d1',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 400000,
+          ticks: {
+            callback: function(value) {
+              return (value / 1000).toFixed(0) + 'K';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// Инициализация графика распределения по городам
+function initCitiesChart() {
+  const ctx = document.getElementById('citiesChart');
+  if (!ctx) return;
+  
+  // Подготовка данных для городов
+  const cityNames = cities.map(c => c.city);
+  const citySums = cities.map(c => c.sum);
+  
+  // Цвета для срезов
+  const colors = [
+    '#0099d1', '#4caf50', '#ff9800', '#e91e63',
+    '#9c27b0', '#00bcd4', '#ffc107', '#795548'
+  ];
+  
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: cityNames,
+      datasets: [{
+        label: 'Собрано (₽)',
+        data: citySums,
+        backgroundColor: colors,
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            font: { size: 12 }
+          }
+        }
+      }
+    }
+  });
+}
 
 // Инициализация
 window.onload = () => {
@@ -373,8 +868,60 @@ window.onload = () => {
     filterCards();
     renderCityLeaderboard();
     renderDonorsLeaderboard();
+    initMap();
+    updateDashboardStats();
+    initMonthlyChart();
+    initCitiesChart();
   }, 100);
 };
+
+// Гамбургер меню
+const menuToggle = document.getElementById('menuToggle');
+const mainNav = document.getElementById('mainNav');
+
+if (menuToggle && mainNav) {
+  menuToggle.addEventListener('click', function() {
+    mainNav.classList.toggle('active');
+    menuToggle.classList.toggle('active');
+  });
+
+  // Закрыть меню при клике на ссылку
+  document.querySelectorAll('#mainNav a').forEach(link => {
+    link.addEventListener('click', function() {
+      mainNav.classList.remove('active');
+      menuToggle.classList.remove('active');
+    });
+  });
+
+  // Закрыть меню при клике на select
+  const citySelect = document.querySelector('#citySelect');
+  if (citySelect) {
+    citySelect.addEventListener('change', function() {
+      if (window.innerWidth <= 768) {
+        mainNav.classList.remove('active');
+        menuToggle.classList.remove('active');
+      }
+    });
+  }
+
+  // Закрыть меню при клике вне его
+  document.addEventListener('click', function(event) {
+    const nav = document.getElementById('mainNav');
+    const toggle = document.getElementById('menuToggle');
+    if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+      nav.classList.remove('active');
+      toggle.classList.remove('active');
+    }
+  });
+
+  // Адаптивность меню при изменении размера окна
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      mainNav.classList.remove('active');
+      menuToggle.classList.remove('active');
+    }
+  });
+}
 </script>
 
 </body>

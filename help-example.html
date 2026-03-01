@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Приют «Верный Друг» • Тюмень — Вода Добра</title>
+  <link rel="stylesheet" href="menu.css">
   <link rel="stylesheet" href="style.css">
   <style>
     .detail-hero { background: linear-gradient(rgba(0,48,135,0.7), rgba(0,48,135,0.5)), url('https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&q=80&w=1600') center/cover; padding:120px 20px; color:white; text-align:center; }
@@ -18,35 +19,7 @@
 </head>
 <body>
 
-<div class="accessibility">Версия для слабовидящих • A A A</div>
-
-<header>
-  <div class="top-line">
-    <div>Горячая линия: 8 800 555-77-33 (бесплатно по России)</div>
-    <div><a href="#" style="color:white;">Личный кабинет донора</a></div>
-  </div>
-  <div style="padding:16px 20px; display:flex; justify-content:space-between; align-items:center; max-width:1240px; margin:auto; flex-wrap:wrap; gap:20px;">
-    <div class="logo">Вода Добра</div>
-    <nav>
-      <select id="citySelect" onchange="filterCards()">
-        <option value="all">Все города</option>
-        <option value="Тюмень">Тюмень</option>
-        <option value="Омск">Омск</option>
-        <option value="Барнаул">Барнаул</option>
-        <option value="Оренбург">Оренбург</option>
-        <option value="Томск">Томск</option>
-        <option value="Воронеж">Воронеж</option>
-        <option value="Краснодар">Краснодар</option>
-      </select>
-      <a href="index.html">Главная</a>
-      <a href="how.html">Как это работает</a>
-      <a href="stories.html">Истории</a>
-      <a href="about.html">О проекте</a>
-      <a href="contacts.html">Контакты</a>
-      <a href="for-ngo.html">Для НКО и приютов</a>
-    </nav>
-  </div>
-</header>
+<script src="menu.js"></script>
 
 <section class="detail-hero">
   <h1>Приют «Верный Друг» • Тюмень</h1>
@@ -106,6 +79,30 @@
   <p>© 2026 «Вода Добра» — социальный проект помощи с оплатой воды</p>
   <p><a href="#">Реквизиты</a> • <a href="#">Политика конфиденциальности</a></p>
 </footer>
+
+<script>
+// Гамбургер меню
+document.getElementById('menuToggle').addEventListener('click', function() {
+  const nav = document.getElementById('mainNav');
+  nav.classList.toggle('active');
+});
+
+// Закрыть меню при клике на ссылку
+document.querySelectorAll('#mainNav a').forEach(link => {
+  link.addEventListener('click', function() {
+    document.getElementById('mainNav').classList.remove('active');
+  });
+});
+
+// Закрыть меню при клике вне его
+document.addEventListener('click', function(event) {
+  const nav = document.getElementById('mainNav');
+  const toggle = document.getElementById('menuToggle');
+  if (!nav.contains(event.target) && !toggle.contains(event.target)) {
+    nav.classList.remove('active');
+  }
+});
+</script>
 
 </body>
 </html>
