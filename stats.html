@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Статистика проекта — Вода Добра</title>
+  <link rel="stylesheet" href="menu.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    :root {
+      --primary-dark: #003087;
+      --primary-blue: #0099d1;
+      --light-bg: #f5f8fa;
+      --text: #333;
+      --gray: #666;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--light-bg);
+      line-height: 1.6;
+    }
+    .accessibility {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      padding: 6px;
+      font-size: 13px;
+    }
+    .hero {
+      background: linear-gradient(rgba(0,48,135,0.65), rgba(0,48,135,0.45)),
+                  url('https://www.rosvodokanal.ru/upload/iblock/5a6/aciw1khlcccidh04q19204skr36dswvw.png') center/cover;
+      color: white;
+      text-align: center;
+      padding: 80px 20px;
+    }
+    .hero h1 { font-size: 44px; margin-bottom: 20px; text-shadow: 2px 2px 8px #000; }
+    .hero p { font-size: 20px; max-width: 800px; margin: 0 auto; }
+    .section { padding: 60px 20px; max-width: 1240px; margin: 0 auto; }
+    .section h2 { color: var(--primary-dark); text-align: center; font-size: 32px; margin-bottom: 40px; }
+    
+    /* Стили для дашборда */
+    .dashboard {
+      background: white;
+      border-radius: 12px;
+      padding: 40px 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+
+    .dashboard h2 {
+      text-align: center;
+      color: var(--primary-dark);
+      font-size: 32px;
+      margin-bottom: 40px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary-blue) 0%, #0077b6 100%);
+      color: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0, 153, 209, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-card:nth-child(2) {
+      background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+    }
+
+    .stat-card:nth-child(3) {
+      background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+      box-shadow: 0 4px 15px rgba(255, 152, 0, 0.2);
+    }
+
+    .stat-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .charts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .chart-box {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .chart-box h3 {
+      color: var(--primary-dark);
+      font-size: 18px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 300px;
+    }
+
+    /* Таблицы рейтингов */
+    .ranking-table {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto 40px;
+      border-collapse: collapse;
+      font-size: 17px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .ranking-table th, .ranking-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    .ranking-table th {
+      background: var(--primary-dark);
+      color: white;
+      font-weight: bold;
+    }
+    .ranking-table tr:nth-child(even) { background: #f9fcff; }
+    .place-1 { font-weight: bold; color: #d4af37; font-size: 1.3em; }
+    .place-2 { font-weight: bold; color: #c0c0c0; font-size: 1.2em; }
+    .place-3 { font-weight: bold; color: #cd7f32; font-size: 1.15em; }
+
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      padding: 50px 20px 20px;
+      text-align: center;
+    }
+    footer a { color: #4fc3f7; }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        padding: 25px 15px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .stat-card {
+        padding: 20px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+      }
+
+      .charts-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .chart-wrapper {
+        height: 250px;
+      }
+
+      .hero { padding: 70px 16px; }
+      .hero h1 { font-size: 32px; }
+      .ranking-table { font-size: 15px; }
+    }
+    
+    @media (max-width: 480px) {
+      .ranking-table { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<script src="menu.js"></script>
+
+<section class="hero">
+  <h1>📊 Статистика проекта</h1>
+  <p>Посмотрите, как развивается наш проект и какая помощь уже оказана</p>
+</section>
+
+<!-- Интерактивный Дашборд -->
+<section class="section">
+  <div class="dashboard">
+    <h2>Основные показатели</h2>
+    
+    <!-- Счётчики -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-label">Собрано всего</div>
+        <div class="stat-value" id="totalRaised">0 ₽</div>
+        <div class="stat-change" id="totalChange">↑ за 30 дней</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-label">Активных доноров</div>
+        <div class="stat-value" id="donorsCount">0</div>
+        <div class="stat-change" id="donorsChange">↑ в этом месяце</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🐾</div>
+        <div class="stat-label">Спасено приютов</div>
+        <div class="stat-value" id="sheltersCount">0</div>
+        <div class="stat-change" id="sheltersChange">в 8 городах</div>
+      </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="charts-container">
+      <div class="chart-box">
+        <h3>Сбор средств по месяцам</h3>
+        <div class="chart-wrapper">
+          <canvas id="monthlyChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-box">
+        <h3>Распределение по городам</h3>
+        <div class="chart-wrapper">
+          <canvas id="citiesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Рейтинг городов -->
+<section class="section">
+  <h2>Рейтинг городов — кто больше всех помогает?</h2>
+  <table class="ranking-table">
+    <thead>
+      <tr>
+        <th>Место</th>
+        <th>Город</th>
+        <th>Собрано жителями</th>
+        <th>Доноров</th>
+        <th>Динамика</th>
+      </tr>
+    </thead>
+    <tbody id="cityLeaderboard"></tbody>
+  </table>
+</section>
+
+<!-- Рейтинг доноров -->
+<section class="section" style="background:#fff;">
+  <h2>Топ-10 самых щедрых доноров</h2>
+  <p style="text-align:center; color:var(--gray); margin-bottom:30px;">Анонимно, по сумме всех пожертвований за время существования проекта</p>
+  <table class="ranking-table">
+    <thead>
+      <tr>
+        <th>Место</th>
+        <th>Донор</th>
+        <th>Город</th>
+        <th>Сумма помощи</th>
+      </tr>
+    </thead>
+    <tbody id="donorsLeaderboard"></tbody>
+  </table>
+</section>
+
+<footer>
+  <p>© 2026 Социальный проект «Вода Добра»</p>
+  <p>Помощь в оплате водоснабжения приютам и семьям в городах Росводоканала</p>
+  <p><a href="#">Реквизиты</a> • <a href="#">Политика конфиденциальности</a> • <a href="for-ngo.html">Для НКО и приютов</a></p>
+</footer>
+
+<script>
+// Данные городов (имитация)
+const cities = [
+  { place: 1, city: "Тюмень",     sum: 1284500, donors: 1247, trend: "↑ +45 200 ₽" },
+  { place: 2, city: "Омск",       sum: 987300,  donors: 892,  trend: "↑ +18 900 ₽" },
+  { place: 3, city: "Барнаул",    sum: 742100,  donors: 681,  trend: "↓ -3 400 ₽"  },
+  { place: 4, city: "Оренбург",   sum: 615400,  donors: 543,  trend: "↑ +72 000 ₽" },
+  { place: 5, city: "Воронеж",    sum: 498200,  donors: 412,  trend: "—"           },
+  { place: 6, city: "Краснодар",  sum: 381900,  donors: 356,  trend: "↑ +9 500 ₽"  },
+  { place: 7, city: "Томск",      sum: 245700,  donors: 198,  trend: "—"           },
+  { place: 8, city: "Армавир",    sum: 156800,  donors: 124,  trend: "↑ +12 300 ₽" }
+];
+
+// Данные доноров (имитация, анонимно)
+const donors = [
+  { place: 1, name: "Алексей К.", city: "Тюмень",    sum: 48750 },
+  { place: 2, name: "Марина П.",  city: "Омск",      sum: 31200 },
+  { place: 3, name: "Сергей В.",  city: "Барнаул",   sum: 24580 },
+  { place: 4, name: "Екатерина М.", city: "Тюмень",  sum: 19840 },
+  { place: 5, name: "Дмитрий Р.", city: "Оренбург",  sum: 16730 },
+  { place: 6, name: "Анна С.",    city: "Воронеж",   sum: 14290 },
+  { place: 7, name: "Игорь Т.",   city: "Краснодар", sum: 11960 },
+  { place: 8, name: "Ольга Л.",   city: "Томск",     sum:  9840 },
+  { place: 9, name: "Владимир З.", city: "Омск",     sum:  8760 },
+  { place:10, name: "Наталья Б.", city: "Тюмень",    sum:  7520 }
+];
+
+function renderCityLeaderboard() {
+  const tbody = document.getElementById('cityLeaderboard');
+  tbody.innerHTML = '';
+  cities.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="place-${item.place <= 3 ? item.place : ''}">${item.place}</td>
+      <td>${item.city}</td>
+      <td>${item.sum.toLocaleString('ru-RU')} ₽</td>
+      <td>${item.donors}</td>
+      <td style="color: ${item.trend.includes('↑') ? '#4caf50' : item.trend.includes('↓') ? '#f44336' : '#666'}">
+        ${item.trend}
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderDonorsLeaderboard() {
+  const tbody = document.getElementById('donorsLeaderboard');
+  tbody.innerHTML = '';
+  donors.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="place-${item.place <= 3 ? item.place : ''}">${item.place}</td>
+      <td>${item.name}</td>
+      <td>${item.city}</td>
+      <td style="font-weight:bold; color:var(--primary-blue);">
+        ${item.sum.toLocaleString('ru-RU')} ₽
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Обновление статистики дашборда
+function updateDashboardStats() {
+  // Расчет общей суммы
+  const totalRaisedSum = cities.reduce((sum, city) => sum + city.sum, 0);
+  document.getElementById('totalRaised').textContent = 
+    totalRaisedSum.toLocaleString('ru-RU') + ' ₽';
+  
+  // Расчет общего количества доноров
+  const totalDonorsCount = cities.reduce((sum, city) => sum + city.donors, 0);
+  document.getElementById('donorsCount').textContent = totalDonorsCount;
+  
+  // Количество спасенных приютов
+  const sheltersCount = cities.length;
+  document.getElementById('sheltersCount').textContent = sheltersCount;
+}
+
+// Инициализация месячного графика сбора средств
+function initMonthlyChart() {
+  const ctx = document.getElementById('monthlyChart');
+  if (!ctx) return;
+  
+  // Имитация данных по месяцам - возрастающий тренд
+  const baseMonthlyAmount = 65000;
+  const monthlyData = [];
+  for (let i = 0; i < 12; i++) {
+    monthlyData.push(baseMonthlyAmount + (i * 25000) + Math.random() * 15000);
+  }
+  
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+      datasets: [{
+        label: 'Сбор средств (₽)',
+        data: monthlyData,
+        borderColor: '#0099d1',
+        backgroundColor: 'rgba(0, 153, 209, 0.05)',
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 5,
+        pointBackgroundColor: '#0099d1',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 400000,
+          ticks: {
+            callback: function(value) {
+              return (value / 1000).toFixed(0) + 'K';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// Инициализация графика распределения по городам
+function initCitiesChart() {
+  const ctx = document.getElementById('citiesChart');
+  if (!ctx) return;
+  
+  // Подготовка данных для городов
+  const cityNames = cities.map(c => c.city);
+  const citySums = cities.map(c => c.sum);
+  
+  // Цвета для срезов
+  const colors = [
+    '#0099d1', '#4caf50', '#ff9800', '#e91e63',
+    '#9c27b0', '#00bcd4', '#ffc107', '#795548'
+  ];
+  
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: cityNames,
+      datasets: [{
+        label: 'Собрано (₽)',
+        data: citySums,
+        backgroundColor: colors,
+        borderColor: '#fff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 15,
+            font: { size: 12 }
+          }
+        }
+      }
+    }
+  });
+}
+
+// Имитация обновления города-лидера каждые 45 сек
+setInterval(() => {
+  cities[0].sum += Math.floor(Math.random() * 15000) + 5000;
+  cities[0].donors += Math.floor(Math.random() * 15) + 3;
+  cities[0].trend = `↑ +${Math.floor(Math.random() * 20000) + 3000} ₽`;
+  cities.sort((a,b) => b.sum - a.sum);
+  cities.forEach((c,i) => c.place = i+1);
+  renderCityLeaderboard();
+  updateDashboardStats();
+}, 45000);
+
+// Инициализация
+window.onload = () => {
+  setTimeout(() => {
+    renderCityLeaderboard();
+    renderDonorsLeaderboard();
+    updateDashboardStats();
+    initMonthlyChart();
+    initCitiesChart();
+  }, 100);
+};
+</script>
+
+</body>
+</html>

@@ -6,7 +6,6 @@
   <title>Вода Добра — помоги оплатить воду тем, кто не может</title>
   <link rel="stylesheet" href="menu.css">
   <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
     :root {
       --primary-dark: #003087;
@@ -526,147 +525,170 @@ function renderCityLeaderboard() {
   });
 }
 
-// Инициализация карты Яндекса
+// Инициализация карты
 function initMap() {
-  ymaps.ready(function() {
-    const map = new ymaps.Map('map', {
-      center: [63, 95],
-      zoom: 4,
-      controls: ['zoomControl', 'fullscreenControl']
-    });
+  const map = L.map('map').setView([63, 95], 4);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 10,
+    minZoom: 3
+  }).addTo(map);
 
-    // Данные городов с координатами и информацией
-    const cityMarkers = [
-      { 
-        name: 'Тюмень', 
-        lat: 57.15, 
-        lng: 65.54, 
-        debt: 138000, 
-        collected: 31, 
-        animals: '620 собак, 180 кошек',
-        shelter: 'Приют «Верный Друг»'
-      },
-      { 
-        name: 'Омск', 
-        lat: 54.99, 
-        lng: 73.37, 
-        debt: 156300, 
-        collected: 22, 
-        animals: '580 животных',
-        shelter: 'Приют «Надежда»'
-      },
-      { 
-        name: 'Барнаул', 
-        lat: 53.35, 
-        lng: 83.77, 
-        debt: 192000, 
-        collected: 27, 
-        animals: '850+ животных',
-        shelter: 'Приют «Лапы Алтая»'
-      },
-      { 
-        name: 'Оренбург', 
-        lat: 51.56, 
-        lng: 55.1, 
-        debt: 115600, 
-        collected: 35, 
-        animals: '420 животных',
-        shelter: 'Приют «Забота»'
-      },
-      { 
-        name: 'Томск', 
-        lat: 56.49, 
-        lng: 84.97, 
-        debt: 95400, 
-        collected: 42, 
-        animals: '380 животных',
-        shelter: 'Приют «Верность»'
-      },
-      { 
-        name: 'Воронеж', 
-        lat: 51.67, 
-        lng: 39.19, 
-        debt: 118900, 
-        collected: 38, 
-        animals: '520 животных',
-        shelter: 'Приют «Луч Добра»'
-      },
-      { 
-        name: 'Краснодар', 
-        lat: 45.04, 
-        lng: 38.98, 
-        debt: 142300, 
-        collected: 29, 
-        animals: '640 животных',
-        shelter: 'Приют «Солнце»'
-      },
-      { 
-        name: 'Армавир', 
-        lat: 45.01, 
-        lng: 41.12, 
-        debt: 89500, 
-        collected: 18, 
-        animals: '340+ животных',
-        shelter: 'Приют «Верный путь»'
-      }
-    ];
+  // Данные городов с координатами и информацией
+  const cityMarkers = [
+    { 
+      name: 'Тюмень', 
+      lat: 57.15, 
+      lng: 65.54, 
+      debt: 138000, 
+      collected: 31, 
+      animals: '620 собак, 180 кошек',
+      shelter: 'Приют «Верный Друг»'
+    },
+    { 
+      name: 'Омск', 
+      lat: 54.99, 
+      lng: 73.37, 
+      debt: 156300, 
+      collected: 22, 
+      animals: '580 животных',
+      shelter: 'Приют «Надежда»'
+    },
+    { 
+      name: 'Барнаул', 
+      lat: 53.35, 
+      lng: 83.77, 
+      debt: 192000, 
+      collected: 27, 
+      animals: '850+ животных',
+      shelter: 'Приют «Лапы Алтая»'
+    },
+    { 
+      name: 'Оренбург', 
+      lat: 51.56, 
+      lng: 55.1, 
+      debt: 115600, 
+      collected: 35, 
+      animals: '420 животных',
+      shelter: 'Приют «Забота»'
+    },
+    { 
+      name: 'Томск', 
+      lat: 56.49, 
+      lng: 84.97, 
+      debt: 95400, 
+      collected: 42, 
+      animals: '380 животных',
+      shelter: 'Приют «Верность»'
+    },
+    { 
+      name: 'Воронеж', 
+      lat: 51.67, 
+      lng: 39.19, 
+      debt: 118900, 
+      collected: 38, 
+      animals: '520 животных',
+      shelter: 'Приют «Луч Добра»'
+    },
+    { 
+      name: 'Краснодар', 
+      lat: 45.04, 
+      lng: 38.98, 
+      debt: 142300, 
+      collected: 29, 
+      animals: '640 животных',
+      shelter: 'Приют «Солнце»'
+    },
+    { 
+      name: 'Армавир', 
+      lat: 45.01, 
+      lng: 41.12, 
+      debt: 89500, 
+      collected: 18, 
+      animals: '340+ животных',
+      shelter: 'Приют «Верный путь»'
+    }
+  ];
 
-    // Создать кластеризатор
-    const clusterer = new ymaps.Clusterer({
-      clusterDisableClickZoom: true,
-      clusterBalloonItemContentLayout: ymaps.templateLayoutFactory.createClass('$[properties.iconContent]')
-    });
-
-    // Добавить маркеры на карту
-    cityMarkers.forEach(city => {
-      const collected = Math.round(city.debt * city.collected / 100);
-      
-      // Определить цвет маркера в зависимости от прогресса
-      let markerColor = '#FF0000';
-      if (city.collected >= 50) {
-        markerColor = '#00CC00';
-      } else if (city.collected >= 30) {
-        markerColor = '#0099FF';
-      }
-      
-      // Создать HTML балуна (всплывающее окно)
-      const balloonContentBody = `
-        <div style="width: 280px; font-family: Arial; font-size: 12px;">
-          <p style="margin: 8px 0;"><strong>${city.name}</strong></p>
-          <p style="color: #666; margin: 6px 0; font-size: 11px;">${city.animals}</p>
+  // Добавить маркеры на карту
+  cityMarkers.forEach(city => {
+    const collected = Math.round(city.debt * city.collected / 100);
+    
+    // Определить цвет маркера в зависимости от прогресса
+    let markerColor = '#003087';
+    if (city.collected >= 50) markerColor = '#4caf50';
+    else if (city.collected >= 30) markerColor = '#0099d1';
+    
+    // Создать HTML popup
+    const popupHTML = `
+      <div class="map-popup-content">
+        <div class="popup-header">${city.shelter}</div>
+        <div class="popup-body">
+          <p><strong>${city.name}</strong></p>
+          <p style="font-size: 13px; color: #666; margin-bottom: 12px;">${city.animals}</p>
           
-          <div style="margin: 10px 0; border-top: 1px solid #ddd; padding-top: 8px;">
-            <p style="margin: 4px 0;"><strong>Долг:</strong> ${city.debt.toLocaleString('ru-RU')} ₽</p>
-            <p style="margin: 4px 0;"><strong>Собрано:</strong> ${collected.toLocaleString('ru-RU')} ₽</p>
-            <p style="margin: 4px 0;"><strong>Прогресс:</strong> ${city.collected}%</p>
+          <div class="popup-stat">
+            <span>Долг:</span>
+            <strong>${city.debt.toLocaleString('ru-RU')} ₽</strong>
           </div>
           
-          <div style="background: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden; margin: 8px 0;">
-            <div style="background: #0099FF; height: 100%; width: ${city.collected}%;"></div>
+          <div class="popup-stat">
+            <span>Собрано:</span>
+            <strong>${collected.toLocaleString('ru-RU')} ₽</strong>
           </div>
           
-          <a href="#cards" style="display: block; background: #003087; color: white; padding: 6px; text-align: center; border-radius: 4px; text-decoration: none; margin-top: 6px; font-weight: bold; font-size: 11px;">Помочь приюту</a>
+          <div class="popup-progress-wrapper">
+            <p style="font-size: 12px; margin-bottom: 6px;"><strong>${city.collected}%</strong></p>
+            <div class="popup-progress">
+              <div class="popup-progress-bar" style="width: ${city.collected}%"></div>
+            </div>
+          </div>
+          
+          <a href="#cards" class="map-button">Помочь приюту</a>
         </div>
-      `;
+      </div>
+    `;
 
-      // Создать метку
-      const placemark = new ymaps.Placemark(
-        [city.lat, city.lng],
-        {
-          balloonContentBody: balloonContentBody,
-          iconContent: '<div style="color: white; font-weight: bold; font-size: 16px;">💧</div>'
-        },
-        {
-          preset: 'islands#icon',
-          iconColor: markerColor
-        }
-      );
-
-      clusterer.add(placemark);
+    // Создать кастомный иконку
+    const markerIcon = L.divIcon({
+      html: `<div style="
+        background: ${markerColor};
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+      ">
+        💧
+      </div>`,
+      iconSize: [40, 40],
+      className: 'city-marker'
     });
 
-    map.geoObjects.add(clusterer);
+    const marker = L.marker([city.lat, city.lng], { icon: markerIcon })
+      .bindPopup(popupHTML, { maxWidth: 270, className: 'city-popup' })
+      .addTo(map);
+
+    // Открыть popup при клике
+    marker.on('click', function() {
+      marker.openPopup();
+    });
   });
+
+  // Добавить слой пользователя
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      // Можно добавить маркер текущего местоположения пользователя
+    });
+  }
 }
 
 // Инициализировать карту когда страница загружена
